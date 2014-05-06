@@ -34,10 +34,10 @@ var App = Backbone.Model.extend({
     });
   },
 
-  send: function(){
+  send: function(text){
     var chat = {
       username: this.get('username'),
-      text: 'you are trolled',
+      text: text,
       roomname: this.get('currentRoom')
     };
     console.log(chat);
