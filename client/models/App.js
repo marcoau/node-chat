@@ -3,7 +3,6 @@ var App = Backbone.Model.extend({
 
     // this.set({chats: new Chats({})});
     this.set({chats: new Chats({username: 'name1', text: 'hi', roomname: 'lobby'})});
-    console.log(this.get('chats'));
     this.set({roomsList: new RoomsList()});
     this.set({currentRoom: 'lobby'});
     this.set({username: 'trololo'});
@@ -19,13 +18,15 @@ var App = Backbone.Model.extend({
     var that = this;
     $.ajax({
       type: 'GET',
-      url: 'http://127.0.0.1:3000/classes',
+      url: 'http://127.0.0.1:3000/chats',
       data: {roomname: that.currentRoom},
       contentType: 'application/json',
       dataType: 'json',
       success: function(response){
         console.log('fetch success');
         console.log(response);
+        that.get('chats').set(response);
+        console.log(that.get('chats'));
       },
       error: function(error){
         console.log('fetch fail');
@@ -43,7 +44,7 @@ var App = Backbone.Model.extend({
     console.log(chat);
     $.ajax({
       type: 'POST',
-      url: 'http://127.0.0.1:3000/classes',
+      url: 'http://127.0.0.1:3000/chats',
       data: JSON.stringify(chat),
       contentType: 'application/json',
       success: function(data){
