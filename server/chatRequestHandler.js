@@ -1,3 +1,10 @@
+var http = require('http');
+var url = require('url');
+var querystring = require('querystring');
+var fs = require('fs');
+var events = require('events');
+var _ = require('underscore');
+
 var utils = require('utils.js').utils;
 
 var chats = [{username: 'russian', text: 'i\'m trololo', roomname: 'lobby'}];
@@ -5,7 +12,11 @@ var chats = [{username: 'russian', text: 'i\'m trololo', roomname: 'lobby'}];
 var chatRequestHandler = function(req, res){
   
   var getAction = function(req, res){
-    res.end(JSON.stringify(chats));
+    var filters = querystring.parse(url.parse(req.url).query);
+    var filteredChats = _.filter(chats, function(chat){
+      return chat.roomname === filters.roomname;
+    });
+    res.end(JSON.stringify(filteredChats));
   };
 
   var postAction = function(req, res){

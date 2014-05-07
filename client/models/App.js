@@ -19,9 +19,9 @@ var App = Backbone.Model.extend({
     $.ajax({
       type: 'GET',
       url: 'http://127.0.0.1:3000/chats',
-      data: {roomname: that.currentRoom},
-      contentType: 'application/json',
-      dataType: 'json',
+      data: {roomname: that.get('currentRoom')},
+      contentType: 'json',
+      // dataType: 'json',
       success: function(response){
         console.log('fetch success');
         console.log(response);
