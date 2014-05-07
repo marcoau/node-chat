@@ -24,9 +24,7 @@ var routes = {
 
 var server = http.createServer(function(req, res){
   res.writeHead(200, utils.headers);
-  console.log(url.parse(req.url));
   var path = url.parse(req.url).pathname;
-  console.log(path);
   var route = routes[path];
   if(route){
     route(req, res);

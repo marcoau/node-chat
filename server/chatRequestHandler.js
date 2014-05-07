@@ -7,7 +7,8 @@ var _ = require('underscore');
 
 var utils = require('utils.js').utils;
 
-var chats = [{username: 'russian', text: 'i\'m trololo', roomname: 'lobby'}];
+var chats = JSON.parse(fs.readFileSync('storage/chatsStorage.txt'));
+console.log(chats);
 
 var chatRequestHandler = function(req, res){
   
@@ -24,6 +25,7 @@ var chatRequestHandler = function(req, res){
     completeData(req, res, function(data){
       var chat = JSON.parse(data);
       chats.push(chat);
+      saveChats(chats);
     });
   };
 
@@ -38,6 +40,12 @@ var chatRequestHandler = function(req, res){
     });
     req.on('end', function(){
       callback(data);
+    });
+  };
+
+  var saveChats = function(chats){
+    fs.writeFile('storage/chatsStorage.txt', JSON.stringify(chats), function(){
+      console.log('save chats success');
     });
   };
 
