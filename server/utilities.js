@@ -8,6 +8,13 @@ var utils = {
     'access-control-max-age': 10,
     'Content-Type': 'application/json'
   },
+  extTypes: {
+  '.html': 'text/html',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.gif': 'image/gif',
+  '.jpeg': 'image/jpeg'
+  },
   notFound: function(res){
     res.writeHead(404, utils.headers);
     res.end('Not Found');

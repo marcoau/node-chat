@@ -1,6 +1,6 @@
 var ChatView = Backbone.View.extend({
   className: 'chat',
-  template: _.template('<span class="chatUsername"><%- username %></span>: <span class="chatText"><%- text %></span>'),
+  template: _.template('<div class="chatUsername">@<%- username %></div><div class="chatText"><%- text %></div>'),
   initialize: function(){
     this.render();
   },

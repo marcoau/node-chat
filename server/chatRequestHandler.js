@@ -4,28 +4,48 @@ var querystring = require('querystring');
 var fs = require('fs');
 var events = require('events');
 var _ = require('underscore');
-
-var utils = require('utils.js').utils;
-
-var chats = JSON.parse(fs.readFileSync('storage/chatsStorage.txt'));
-console.log(chats);
+var utils = require('./utilities').utils;
 
 var chatRequestHandler = function(req, res){
+
+
   
   var getAction = function(req, res){
     var filters = querystring.parse(url.parse(req.url).query);
-    var filteredChats = _.filter(chats, function(chat){
-      return chat.roomname === filters.roomname;
+    fs.readFile('./storage/chatsStorage.txt', function(err, data){
+      if(err){
+        console.log(err);
+      }else{
+        var chats = JSON.parse(data.toString());
+        console.log(chats);
+        var filteredChats = _.filter(chats, function(chat){
+          //max number of chats: 50
+          return chat.roomname === filters.roomname && chat.chatID > chats.length - 50;
+        });
+        res.end(JSON.stringify(filteredChats.reverse()));
+      }
     });
-    res.end(JSON.stringify(filteredChats));
   };
 
   var postAction = function(req, res){
-    var data = '';
-    completeData(req, res, function(data){
-      var chat = JSON.parse(data);
-      chats.push(chat);
-      saveChats(chats);
+    completeData(req, res, function(chat){
+      fs.readFile('./storage/chatsStorage.txt', function(err, data){
+        if(err){
+          console.log(err);
+        }else{
+          // console.log(data);
+          var chats = JSON.parse(data.toString());
+          console.log(typeof chat);
+          console.log('chat: ' + chat);
+          var newChat = JSON.parse(chat);
+          newChat['timeSent'] = new Date();
+          newChat['chatID'] = chats.length + 1;
+          console.log('newChat: ' + newChat);
+          chats.push(newChat);
+          saveChats(chats);
+          // res.end(JSON.stringify(filteredChats));
+        }
+      });
     });
   };
 
@@ -44,8 +64,14 @@ var chatRequestHandler = function(req, res){
   };
 
   var saveChats = function(chats){
-    fs.writeFile('storage/chatsStorage.txt', JSON.stringify(chats), function(){
-      console.log('save chats success');
+    fs.writeFile('storage/chatsStorage.txt', JSON.stringify(chats), function(err){
+      if(err){
+        utils.send404();
+      }else{
+        console.log('save chats success');
+        res.writeHead(201, utils.headers);
+        res.end('save chats success');        
+      }
     });
   };
 

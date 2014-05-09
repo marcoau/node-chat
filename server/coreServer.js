@@ -3,9 +3,10 @@ var url = require('url');
 var fs = require('fs');
 var events = require('events');
 var _ = require('underscore');
+var chatRequestHandler = require('./chatRequestHandler').handler;
+var assetHandler = require('./assetHandler').handler;
 
-var chatRequestHandler = require('chatRequestHandler.js').handler;
-var utils = require('utils.js').utils;
+var utils = require('./utilities').utils;
 
 var port = 3000;
 var ip = '127.0.0.1';
@@ -23,13 +24,15 @@ var routes = {
 };
 
 var server = http.createServer(function(req, res){
+  console.log('type of request: ' + req.method);
   res.writeHead(200, utils.headers);
   var path = url.parse(req.url).pathname;
   var route = routes[path];
   if(route){
     route(req, res);
   }else{
-    utils.notFound(res);
+    console.log('here');
+    assetHandler(req, res);
   }
 });
 

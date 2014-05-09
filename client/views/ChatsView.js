@@ -3,7 +3,6 @@ var ChatsView = Backbone.View.extend({
   initialize: function(){
     this.render();
     this.collection.on('add set remove', function(){
-      console.log('collection change');
       this.render();
     }, this);
   },

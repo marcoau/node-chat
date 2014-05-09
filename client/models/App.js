@@ -2,16 +2,20 @@ var App = Backbone.Model.extend({
   initialize: function(){
 
     // this.set({chats: new Chats({})});
-    this.set({chats: new Chats({username: 'name1', text: 'hi', roomname: 'lobby'})});
+    this.set({chats: new Chats()});
     this.set({roomsList: new RoomsList()});
     this.set({currentRoom: 'lobby'});
-    this.set({username: 'trololo'});
+    this.set({username: 'guest'});
     this.set({friendsList: new FriendsList()});
     
     var that = this;
     setInterval(function(){
       that.fetch();
     },3000);
+
+    this.on('change:currentRoom', function(){
+      this.fetch();
+    }, this);
   },
 
   fetch: function(){
@@ -24,9 +28,8 @@ var App = Backbone.Model.extend({
       // dataType: 'json',
       success: function(response){
         console.log('fetch success');
-        console.log(response);
-        that.get('chats').set(response);
-        console.log(that.get('chats'));
+        that.get('chats').set(JSON.parse(response));
+        // console.log(that.get('chats'));
       },
       error: function(error){
         console.log('fetch fail');
@@ -41,14 +44,16 @@ var App = Backbone.Model.extend({
       text: text,
       roomname: this.get('currentRoom')
     };
-    console.log(chat);
+    // console.log(chat);
     $.ajax({
       type: 'POST',
       url: 'http://127.0.0.1:3000/chats',
       data: JSON.stringify(chat),
-      contentType: 'application/json',
+      contentType: 'json',
+      context: this,
       success: function(data){
         console.log('send success');
+        this.fetch();
       },
       error: function(error){
         console.log('send fail');
